@@ -4,7 +4,8 @@ import './App.css';
 
 function App() {
   const initialOptions = {
-    "client-id": "test", // 나중에 실제 클라이언트 ID로 교체 필요
+    // 환경 변수에서 실제 Client ID를 읽어오도록 설정
+    "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID || "test",
     currency: "USD",
     intent: "capture",
   };
