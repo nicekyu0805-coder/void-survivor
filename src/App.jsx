@@ -33,9 +33,9 @@ function App() {
             <div className="how-to-play">
               <h3>🎮 게임 방법 (How to Play)</h3>
               <ul>
-                <li><strong>조작법</strong>: <strong>방향키(↑ ↓ ← →)</strong>를 이용해 캐릭터를 자유롭게 움직이세요.</li>
-                <li><strong>생존 법칙</strong>: 사면초가! 사방에서 조여오는 적들을 피해 <strong>최대한 오래 생존</strong>해야 합니다.</li>
-                <li><strong>파괴와 정복</strong>: 프리미엄 아이템 장착 시 <strong>자동 사격(Auto-Fire)</strong>이 활성화됩니다. (별도 공격 키 없음, 자동 추적 사격!)</li>
+                <li><strong>PC 조작</strong>: <strong>방향키(↑ ↓ ← →)</strong>로 캐릭터를 정밀하게 움직이세요.</li>
+                <li><strong>모바일 조작</strong>: 화면의 <strong>이동하고 싶은 곳을 터치</strong>하세요! 캐릭터가 손가락을 따라 실시간으로 따라옵니다. (드래그하면 계속 따라와요!)</li>
+                <li><strong>자동 사격</strong>: 프리미엄 아이템 장착 시 <strong>자동으로 가장 가까운 적</strong>을 조준 사격합니다. 조작은 오직 이동에만 집중하세요!</li>
                 <li><strong>강화 전략</strong>: 생존 시간에 따라 점수가 쌓이며, <strong>프리미엄 상점</strong>의 아이템으로 한계를 돌파하세요.</li>
               </ul>
             </div>
