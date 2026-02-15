@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v3.9 - Height-Locked)
-        this.versionText = this.add.text(width / 2, height - 30, 'v3.9 - Height Priority Locked', {
+        // 3. 버전 표시 간소화 (v4.0 - Game Balance)
+        this.versionText = this.add.text(width / 2, height - 30, 'v4.0 - Premium Balance Patch', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
@@ -255,6 +255,10 @@ class GameScene extends Phaser.Scene {
 
         GameState.score = 0;
         GameState.isGameOver = false;
+        // [v4.0 핵심] 매 판 시작 시 강화 상태 초기화 (세션 오염 방지)
+        GameState.canShoot = false;
+        GameState.speed = 200;
+        GameState.weaponLevel = 1;
 
         // 타이머 설정
         this.initGameLogic();
@@ -279,9 +283,19 @@ class GameScene extends Phaser.Scene {
         if (!this.player) return;
         this.cameras.main.flash(500, 0, 255, 255, 0.3);
         switch (type) {
-            case 'SPEED_BOOST': GameState.speed *= 1.5; GameState.canShoot = true; this.player.setTint(0x00ff00); break;
-            case 'GOLDEN_HERO': GameState.weaponLevel = 2; GameState.canShoot = true; this.player.setScale(1.5).setTint(0xffff00); break;
-            case 'RESURRECT': this.player.setAlpha(0.5); this.time.delayedCall(5000, () => this.player.setAlpha(1)); break;
+            case 'SPEED_BOOST':
+                GameState.speed = 300; // 1.5배 (200 * 1.5)
+                this.player.setTint(0x00ff00);
+                break;
+            case 'GOLDEN_HERO':
+                GameState.weaponLevel = 2;
+                GameState.canShoot = true;
+                this.player.setScale(1.5).setTint(0xffff00);
+                break;
+            case 'RESURRECT':
+                this.player.setAlpha(0.5);
+                this.time.delayedCall(5000, () => this.player.setAlpha(1));
+                break;
         }
     }
 
