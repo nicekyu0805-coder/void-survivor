@@ -23,9 +23,9 @@ function App() {
             <div className="how-to-play">
               <h3>🎮 게임 방법 (How to Play)</h3>
               <ul>
-                <li><strong>이동</strong>: 키보드 방향키(↑, ↓, ←, →)를 사용하여 움직이세요.</li>
-                <li><strong>목표</strong>: 사방에서 몰려오는 적들을 피해 최대한 오래 살아남으세요!</li>
-                <li><strong>성장</strong>: 적을 피하며 점수를 획득하고, 상점에서 강력한 보너스를 챙기세요.</li>
+                <li><strong>조작법</strong>: <strong>방향키(↑ ↓ ← →)</strong>를 이용해 캐릭터를 자유롭게 움직이세요.</li>
+                <li><strong>생존 법칙</strong>: 사면초가! 사방에서 조여오는 적들을 피해 <strong>최대한 오래 생존</strong>해야 합니다.</li>
+                <li><strong>강화 전략</strong>: 생존 시간에 따라 점수가 쌓이며, <strong>프리미엄 상점</strong>의 아이템으로 한계를 돌파하세요.</li>
               </ul>
             </div>
             <GameComponent />
@@ -39,13 +39,13 @@ function App() {
               <div className="item free-gift">
                 <span className="item-name">무료 일일 보너스</span>
                 <span className="item-price">FREE</span>
-                <p className="item-desc">오늘의 행운! 이동 속도가 1.5배로 증가합니다.</p>
+                <p className="item-desc">오늘의 행운! 이동 속도가 즉시 1.5배 빨라집니다.</p>
                 <button
                   className="claim-button"
                   onClick={() => {
                     if (window.applyGameReward) {
                       window.applyGameReward('SPEED_BOOST');
-                      alert('이동 속도가 1.5배 증가했습니다! ⚡');
+                      alert('신속의 축복! 이동 속도가 1.5배 빨라졌습니다! ⚡');
                     }
                   }}
                 >
@@ -56,7 +56,7 @@ function App() {
               <div className="item">
                 <span className="item-name">황금 영웅 팩</span>
                 <span className="item-price">$4.99</span>
-                <p className="item-desc">모든 능력치 +20% 증가 및 전용 스킨</p>
+                <p className="item-desc">위엄 있는 황금 영웅으로 변신! 모든 능력치가 20% 영구 상승합니다.</p>
                 <div className="pay-button">
                   <PayPalButtons
                     style={{ layout: "vertical", height: 40 }}
@@ -75,7 +75,7 @@ function App() {
                       return actions.order.capture().then((details) => {
                         if (window.applyGameReward) {
                           window.applyGameReward('GOLDEN_HERO');
-                          alert(`${details.payer.name.given_name} 님, 황금 영웅으로 변신했습니다! ✨`);
+                          alert(`전설의 탄생! ${details.payer.name.given_name} 님이 황금 영웅으로 각성했습니다! ✨`);
                         }
                       });
                     }}
@@ -86,7 +86,7 @@ function App() {
               <div className="item">
                 <span className="item-name">무한 부활권</span>
                 <span className="item-price">$1.99</span>
-                <p className="item-desc">죽어도 5초간 무적 상태로 부활합니다!</p>
+                <p className="item-desc">죽음은 끝이 아닙니다. 부활 시 5초간 무적 상태가 되어 반격하세요!</p>
                 <div className="pay-button">
                   <PayPalButtons
                     style={{ layout: "vertical", height: 40 }}
@@ -105,7 +105,7 @@ function App() {
                       return actions.order.capture().then((details) => {
                         if (window.applyGameReward) {
                           window.applyGameReward('RESURRECT');
-                          alert(`부활권 구매 완료! 5초간 무적 상태가 됩니다. 👻`);
+                          alert(`불사조의 가호! 부활과 함께 5초간 무적 상태가 됩니다. 👻`);
                         }
                       });
                     }}
