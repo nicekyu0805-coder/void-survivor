@@ -3,22 +3,10 @@ import Phaser from 'phaser';
 class MainScene extends Phaser.Scene {
     constructor() {
         super('MainScene');
+        // 불변 변수만 여기에 유지
         this.player = null;
         this.cursors = null;
-        this.score = 0;
         this.scoreText = null;
-        this.isGameOver = false;
-
-        // 보상 관련 변수
-        this.playerStats = {
-            speed: 200,
-            scale: 1,
-            isInvincible: false
-        };
-        this.difficulty = {
-            enemySpeed: 100,
-            spawnRate: 1000
-        };
     }
 
     preload() {
@@ -28,6 +16,19 @@ class MainScene extends Phaser.Scene {
     }
 
     create() {
+        // 매 판 시작 시 데이터 초기화
+        this.score = 0;
+        this.isGameOver = false;
+        this.playerStats = {
+            speed: 200,
+            scale: 1,
+            isInvincible: false
+        };
+        this.difficulty = {
+            enemySpeed: 100,
+            spawnRate: 1000
+        };
+
         // 배경 설정
         this.cameras.main.setBackgroundColor('#000033');
 
@@ -35,8 +36,7 @@ class MainScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setCollideWorldBounds(true);
 
-        // 점수 초기화 (재시작 시 필수)
-        this.score = 0;
+        // 점수 텍스트
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
 
         // 입력 설정
@@ -86,6 +86,10 @@ class MainScene extends Phaser.Scene {
         this.difficulty.enemySpeed += 10;
         this.difficulty.spawnRate = Math.max(300, this.difficulty.spawnRate - 50);
 
+        // 비주얼 피드백: 화면 살짝 흔들림 및 짧은 플래시
+        this.cameras.main.shake(200, 0.01);
+        this.cameras.main.flash(500, 255, 0, 0, 0.1);
+
         // 스폰 타이머 업데이트
         this.spawnTimer.remove();
         this.spawnTimer = this.time.addEvent({
@@ -98,6 +102,9 @@ class MainScene extends Phaser.Scene {
 
     applyReward(type) {
         if (!this.player) return;
+
+        // 보상 획득 비주얼 피드백: 강한 플래시
+        this.cameras.main.flash(1000, 0, 212, 255, 0.3);
 
         switch (type) {
             case 'SPEED_BOOST':
