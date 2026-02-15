@@ -28,6 +28,45 @@ function App() {
                 <li><strong>강화 전략</strong>: 생존 시간에 따라 점수가 쌓이며, <strong>프리미엄 상점</strong>의 아이템으로 한계를 돌파하세요.</li>
               </ul>
             </div>
+
+            {/* 가상 글로벌 랭킹 섹션 추가 */}
+            <div className="hall-of-fame">
+              <h3>🏆 Hall of Fame (Global)</h3>
+              <div className="ranking-list">
+                <div className="rank-item gold">
+                  <span className="rank-num">1</span>
+                  <span className="rank-flag">🇺🇸</span>
+                  <span className="rank-id">ShadowMaster</span>
+                  <span className="rank-score">12,450</span>
+                </div>
+                <div className="rank-item silver">
+                  <span className="rank-num">2</span>
+                  <span className="rank-flag">🇰🇷</span>
+                  <span className="rank-id">K-Survivor</span>
+                  <span className="rank-score">10,890</span>
+                </div>
+                <div className="rank-item bronze">
+                  <span className="rank-num">3</span>
+                  <span className="rank-flag">🇯🇵</span>
+                  <span className="rank-id">NeonNinja</span>
+                  <span className="rank-score">9,120</span>
+                </div>
+                <div className="rank-item">
+                  <span className="rank-num">4</span>
+                  <span className="rank-flag">🇩🇪</span>
+                  <span className="rank-id">VoidWalker</span>
+                  <span className="rank-score">7,540</span>
+                </div>
+                <div className="rank-item">
+                  <span className="rank-num">5</span>
+                  <span className="rank-flag">🇫🇷</span>
+                  <span className="rank-id">StarDust</span>
+                  <span className="rank-score">6,210</span>
+                </div>
+              </div>
+              <p className="ranking-footer">전 세계 12,453명의 생존자가 경쟁 중입니다!</p>
+            </div>
+
             <GameComponent />
           </div>
 

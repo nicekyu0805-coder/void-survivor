@@ -220,12 +220,107 @@ body {
   line-height: 1.4;
 }
 
+/* Hall of Fame 스타일 */
+.hall-of-fame {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border-left: 4px solid var(--neon-blue);
+  margin-bottom: 20px;
+}
+
+.hall-of-fame h3 {
+  font-size: 1.1rem;
+  color: var(--neon-blue);
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: transform 0.2s;
+}
+
+.rank-item:hover {
+  transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.rank-num {
+  width: 25px;
+  font-weight: bold;
+  color: #888;
+}
+
+.rank-flag {
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.rank-id {
+  flex: 1;
+  color: #ddd;
+}
+
+.rank-score {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  color: var(--neon-blue);
+}
+
+/* 상위 랭커 효과 */
+.rank-item.gold .rank-num {
+  color: #ffd700;
+}
+
+.rank-item.gold {
+  border-right: 2px solid #ffd700;
+}
+
+.rank-item.silver .rank-num {
+  color: #c0c0c0;
+}
+
+.rank-item.silver {
+  border-right: 2px solid #c0c0c0;
+}
+
+.rank-item.bronze .rank-num {
+  color: #cd7f32;
+}
+
+.rank-item.bronze {
+  border-right: 2px solid #cd7f32;
+}
+
+.ranking-footer {
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: #555;
+  text-align: right;
+  font-style: italic;
+}
+
 .footer {
   margin-top: 60px;
   padding: 30px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: #666;
   font-size: 0.9rem;
+  text-align: center;
 }
 
 @media (max-width: 1100px) {
