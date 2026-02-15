@@ -56,11 +56,35 @@ body {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
-  padding: 1rem;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 1.5rem;
+}
+
+.how-to-play {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--neon-blue);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: left;
+}
+
+.how-to-play h3 {
+  margin-top: 0;
+  color: var(--neon-blue);
+  font-size: 1.2rem;
+}
+
+.how-to-play ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .premium-shop {

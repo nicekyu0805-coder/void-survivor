@@ -20,6 +20,14 @@ function App() {
 
         <main className="main-layout">
           <div className="game-section">
+            <div className="how-to-play">
+              <h3>🎮 게임 방법 (How to Play)</h3>
+              <ul>
+                <li><strong>이동</strong>: 키보드 방향키(↑, ↓, ←, →)를 사용하여 움직이세요.</li>
+                <li><strong>목표</strong>: 사방에서 몰려오는 적들을 피해 최대한 오래 살아남으세요!</li>
+                <li><strong>성장</strong>: 적을 피하며 점수를 획득하고, 상점에서 강력한 보너스를 챙기세요.</li>
+              </ul>
+            </div>
             <GameComponent />
           </div>
 
