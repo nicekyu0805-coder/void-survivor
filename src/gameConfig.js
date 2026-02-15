@@ -24,6 +24,12 @@ class UIScene extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
+        // [v3.5 익스텐션] 화면 크기 변경 시 UI 재배치 리스너
+        this.scale.on('resize', (gameSize) => {
+            const { width: w, height: h } = gameSize;
+            this.repositionUI(w, h);
+        });
+
         // 1. 가상 조이스틱 생성 (저장된 위치가 있으면 불러오고 없으면 기본값)
         const savedPos = localStorage.getItem('joystick_position');
         if (savedPos) {
@@ -48,7 +54,7 @@ class UIScene extends Phaser.Scene {
         this.joystickStick.setDepth(101);
 
         // 2. 전체 화면 버튼
-        const fsButton = this.add.text(width - 20, 20, ' [ FULLSCREEN ] ', {
+        this.fsButton = this.add.text(width - 20, 20, ' [ FULLSCREEN ] ', {
             fontSize: '28px',
             fill: '#00ff00',
             backgroundColor: 'rgba(0,0,0,0.8)',
@@ -56,17 +62,17 @@ class UIScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(1, 0).setInteractive({ useHandCursor: true }).setDepth(1000);
 
-        fsButton.on('pointerdown', () => {
+        this.fsButton.on('pointerdown', () => {
             if (this.scale.isFullscreen) {
                 this.scale.stopFullscreen();
-                fsButton.setText(' [ FULLSCREEN ] ');
+                this.fsButton.setText(' [ FULLSCREEN ] ');
             } else {
                 this.scale.startFullscreen();
                 // 풀스크린 진입 시 폰트에 맞춰 다시 한번 센터링 유도
                 this.time.delayedCall(500, () => {
                     this.scale.refresh();
                 });
-                fsButton.setText(' [ EXIT FS ] ');
+                this.fsButton.setText(' [ EXIT FS ] ');
             }
         });
 
@@ -133,6 +139,21 @@ class UIScene extends Phaser.Scene {
                 GameState.joystickData.force = 0;
             }
         });
+    }
+
+    // [v3.5 핵심] 실시간 레이아웃 재배치 함수
+    repositionUI(w, h) {
+        // 버튼 및 텍스트 위치 갱신
+        this.fsButton.setPosition(w - 20, 20);
+        this.versionText.setPosition(w / 2, h - 15);
+        this.scoreText.setPosition(20, 20);
+
+        // 조이스틱이 화면 밖으로 나가지 않게 보정 (저장된 위치가 있을 때만)
+        if (this.joystickX > w - 100) this.joystickX = w - 100;
+        if (this.joystickY > h - 100) this.joystickY = h - 100;
+
+        this.joystickBase.setPosition(this.joystickX, this.joystickY);
+        this.joystickStick.setPosition(this.joystickX, this.joystickY);
     }
 
     update(time, delta) {
@@ -346,10 +367,10 @@ class GameScene extends Phaser.Scene {
 const config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.ENVELOP,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 800,
-        height: 600,
+        width: '100%',
+        height: '100%',
         autoRound: true
     },
     physics: { default: 'arcade', arcade: { gravity: { y: 0 } } },
