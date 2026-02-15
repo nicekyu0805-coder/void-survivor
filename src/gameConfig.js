@@ -79,56 +79,21 @@ class UIScene extends Phaser.Scene {
             const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, pointer.x, pointer.y);
 
             // 조이스틱 본체 또는 근처를 터치했을 때 추적 시작
-            // This HTML/CSS/React-like code is not valid in a Phaser JavaScript file.
-            // It will cause a syntax error if uncommented or directly inserted.
-            // If the intention was to create a Phaser UI element with similar styling,
-            // it would need to be implemented using Phaser's graphics and text objects.
-            /*
-            <footer className="footer" style={{ position: 'relative' }}>
-          <p>© 2026 Void Survivor Studio. All Rights Reserved.</p>
-          <div style={{ 
-            position: 'fixed', 
-            bottom: '10px', 
-            right: '10px', 
-            background: '#ff00ff', 
-            color: '#fff', 
-            padding: '5px 15px', 
-            borderRadius: '20px', 
-            fontWeight: 'bold',
-            fontSize: '12px',
-            boxShadow: '0 0 15px #ff00ff',
-            zIndex: 9999,
-            animation: 'pulse 1.5s infinite'
-          }}>
-            LIVE v3.0 - NEW JOystick ACTIVE
-          </div>
-          <style>{`
-            @keyframes pulse {
-              0% { transform: scale(1); opacity: 1; }
-              50% { transform: scale(1.1); opacity: 0.8; }
-              100% { transform: scale(1); opacity: 1; }
-            }
-          `}</style>
-        </footer>
-        */
-            // Adding a Phaser text object as a badge instead, based on the visual description.
-            const badgeText = this.add.text(width - 10, height - 10, 'LIVE v3.0 - NEW JOystick ACTIVE', {
-                fontSize: '12px',
+            // v3.0 배지 (Phaser 레이어)
+            const badgeText = this.add.text(width - 20, height - 20, 'GAME v3.0 - RECONNECTED', {
+                fontSize: '14px',
                 fill: '#fff',
                 backgroundColor: '#ff00ff',
-                padding: { x: 15, y: 5 },
+                padding: { x: 10, y: 5 },
                 fontStyle: 'bold'
             }).setOrigin(1, 1).setDepth(9999);
 
-            // Simple pulse animation for the badge
             this.tweens.add({
                 targets: badgeText,
-                scale: 1.1,
-                alpha: 0.8,
-                duration: 750,
+                alpha: 0.5,
+                duration: 800,
                 yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
+                repeat: -1
             });
 
             if (dist < 120) {
