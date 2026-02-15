@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 // 전역 변수 공유를 위한 간단한 객체 (Scene 간 통신용)
 const GameState = {
     joystickData: { x: 0, y: 0, isDown: false, angle: 0 },
+    joystickPos: null, // 저장된 위치 {x, y}
     speed: 200,
     weaponLevel: 1,
     canShoot: false,
@@ -23,9 +24,16 @@ class UIScene extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
-        // 1. 가상 조이스틱 생성
-        this.joystickX = width * 0.2;
-        this.joystickY = height * 0.75;
+        // 1. 가상 조이스틱 생성 (저장된 위치가 있으면 불러오고 없으면 기본값)
+        const savedPos = localStorage.getItem('joystick_position');
+        if (savedPos) {
+            const pos = JSON.parse(savedPos);
+            this.joystickX = pos.x;
+            this.joystickY = pos.y;
+        } else {
+            this.joystickX = width * 0.2;
+            this.joystickY = height * 0.75;
+        }
 
         this.joystickBase = this.add.graphics();
         this.joystickBase.fillStyle(0xff00ff, 0.2).fillCircle(0, 0, 80);
@@ -58,8 +66,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 최신 버전 표시 (확인용 황금색 크고 뚜렷하게)
-        this.versionText = this.add.text(width / 2, height - 30, 'v3.0 - ULTIMATE FIX ACTIVE', {
+        // 3. 최신 버전 표시 (v3.1)
+        this.versionText = this.add.text(width / 2, height - 30, 'v3.1 - Pos Persistence Active', {
             fontSize: '18px',
             fill: '#ffd700',
             fontStyle: 'bold',
@@ -113,6 +121,12 @@ class UIScene extends Phaser.Scene {
 
         this.input.on('pointerup', (pointer) => {
             if (this.activePointer === pointer) {
+                // 조이스틱 위치가 바뀌었다면 로컬 저장소에 저장
+                if (this.isRepositioning) {
+                    localStorage.setItem('joystick_position', JSON.stringify({ x: this.joystickX, y: this.joystickY }));
+                    console.log("Saved Joystick Position:", this.joystickX, this.joystickY);
+                }
+
                 this.isRepositioning = false;
                 this.joystickActive = false;
                 this.activePointer = null;
