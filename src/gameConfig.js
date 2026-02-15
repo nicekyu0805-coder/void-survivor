@@ -66,13 +66,11 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 최신 버전 표시 (v3.2)
-        this.versionText = this.add.text(width / 2, height - 30, 'v3.2 - Smart Control Active', {
-            fontSize: '18px',
-            fill: '#ffd700',
-            fontStyle: 'bold',
-            backgroundColor: '#000'
-        }).setOrigin(0.5).setDepth(1000);
+        // 3. 버전 표시 간소화 (투명도 조절하여 눈에 띄지 않게)
+        this.versionText = this.add.text(width / 2, height - 15, 'v3.3 - Stable Build', {
+            fontSize: '12px',
+            fill: '#ffffff'
+        }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
         this.scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '32px', fill: '#ffffff' });
 
         // 조작 변수 초기화
