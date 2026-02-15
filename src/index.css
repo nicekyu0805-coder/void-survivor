@@ -89,8 +89,18 @@ body {
   overflow: hidden;
   box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
   touch-action: none;
-  /* 브라우저 기본 터치 동작(스크롤 등) 방지 - 게임 터치 우선 */
   margin: 0 auto;
+}
+
+/* [v3.4] 풀스크린 시 강제 꽉 채움 배경 */
+#game-container:fullscreen,
+#game-container:-webkit-full-screen {
+  max-width: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .how-to-play {

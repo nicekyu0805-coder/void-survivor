@@ -62,6 +62,10 @@ class UIScene extends Phaser.Scene {
                 fsButton.setText(' [ FULLSCREEN ] ');
             } else {
                 this.scale.startFullscreen();
+                // 풀스크린 진입 시 폰트에 맞춰 다시 한번 센터링 유도
+                this.time.delayedCall(500, () => {
+                    this.scale.refresh();
+                });
                 fsButton.setText(' [ EXIT FS ] ');
             }
         });
@@ -295,7 +299,9 @@ class GameScene extends Phaser.Scene {
 
     spawnEnemy() {
         if (GameState.isGameOver) return;
-        const x = Phaser.Math.Between(0, 800), y = Phaser.Math.Between(0, 600);
+        const { width, height } = this.scale;
+        const x = Phaser.Math.Between(0, width);
+        const y = Phaser.Math.Between(0, height);
         if (Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) < 200) return;
         const enemy = this.enemies.create(x, y, 'enemy');
         this.physics.moveToObject(enemy, this.player, 100 + (GameState.score / 10));
@@ -312,7 +318,8 @@ class GameScene extends Phaser.Scene {
         GameState.isGameOver = true;
         this.physics.pause();
         this.player.setTint(0xff0000);
-        this.add.text(400, 300, 'GAME OVER', { fontSize: '64px', fill: '#f00' }).setOrigin(0.5).setDepth(200);
+        const { width, height } = this.scale;
+        this.add.text(width / 2, height / 2, 'GAME OVER', { fontSize: '64px', fill: '#f00' }).setOrigin(0.5).setDepth(200);
 
         setTimeout(() => {
             this.scene.stop('UIScene');
