@@ -46,6 +46,9 @@ class MainScene extends Phaser.Scene {
         this.enemies = this.physics.add.group();
         this.physics.add.overlap(this.player, this.enemies, this.handleGameOver, null, this);
 
+        // 저장된 구매 내역 로드 및 적용
+        this.loadPersistentRewards();
+
         // 타이머 및 이벤트 초기화
         this.initTimers();
 
@@ -53,6 +56,16 @@ class MainScene extends Phaser.Scene {
         window.applyGameReward = (rewardType) => {
             this.applyReward(rewardType);
         };
+    }
+
+    loadPersistentRewards() {
+        const saved = localStorage.getItem('void_survivor_purchases');
+        if (saved) {
+            const purchases = JSON.parse(saved);
+            purchases.forEach(itemKey => {
+                this.applyReward(itemKey);
+            });
+        }
     }
 
     initTimers() {
@@ -168,8 +181,21 @@ class MainScene extends Phaser.Scene {
         // 점수 타이머를 포함한 모든 타이머 정지
         this.time.removeAllEvents();
 
-        this.add.text(400, 300, 'GAME OVER', { fontSize: '64px', fill: '#f00' }).setOrigin(0.5);
-        this.add.text(400, 380, 'Final Score: ' + this.score, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        // 최고 기록 관리
+        const savedHighScore = localStorage.getItem('void_survivor_highscore') || 0;
+        let isNewRecord = false;
+        if (this.score > savedHighScore) {
+            localStorage.setItem('void_survivor_highscore', this.score);
+            isNewRecord = true;
+        }
+        const currentHighScore = Math.max(this.score, savedHighScore);
+
+        this.add.text(400, 250, 'GAME OVER', { fontSize: '64px', fill: '#f00' }).setOrigin(0.5);
+        this.add.text(400, 330, 'Final Score: ' + this.score, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        this.add.text(400, 380, (isNewRecord ? 'NEW RECORD: ' : 'Best Score: ') + currentHighScore, {
+            fontSize: '28px',
+            fill: isNewRecord ? '#ffd700' : '#888'
+        }).setOrigin(0.5);
 
         this.time.addEvent({
             delay: 3000,

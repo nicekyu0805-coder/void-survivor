@@ -10,6 +10,16 @@ function App() {
     intent: "capture",
   };
 
+  // 아이템 구매 내역을 localStorage에 저장하는 유틸리티 함수
+  const savePurchase = (itemKey) => {
+    const saved = localStorage.getItem('void_survivor_purchases');
+    const purchases = saved ? JSON.parse(saved) : [];
+    if (!purchases.includes(itemKey)) {
+      purchases.push(itemKey);
+      localStorage.setItem('void_survivor_purchases', JSON.stringify(purchases));
+    }
+  };
+
   return (
     <PayPalScriptProvider options={initialOptions}>
       <div className="container">
@@ -112,6 +122,7 @@ function App() {
                     }}
                     onApprove={(data, actions) => {
                       return actions.order.capture().then((details) => {
+                        savePurchase('GOLDEN_HERO'); // 결제 정보 영구 저장
                         if (window.applyGameReward) {
                           window.applyGameReward('GOLDEN_HERO');
                           alert(`전설의 탄생! ${details.payer.name.given_name} 님이 황금 영웅으로 각성했습니다! ✨`);
@@ -142,6 +153,7 @@ function App() {
                     }}
                     onApprove={(data, actions) => {
                       return actions.order.capture().then((details) => {
+                        savePurchase('RESURRECT'); // 결제 정보 영구 저장
                         if (window.applyGameReward) {
                           window.applyGameReward('RESURRECT');
                           alert(`불사조의 가호! 부활과 함께 5초간 무적 상태가 됩니다. 👻`);
