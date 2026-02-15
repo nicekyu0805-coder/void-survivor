@@ -13,6 +13,7 @@ class MainScene extends Phaser.Scene {
         // 임시 도트 이미지 생성 (나중에 실제 이미지로 교체 가능)
         this.load.image('player', 'https://labs.phaser.io/assets/sprites/phaser-dude.png');
         this.load.image('enemy', 'https://labs.phaser.io/assets/sprites/tinycar.png');
+        this.load.image('bullet', 'https://labs.phaser.io/assets/sprites/bullets/bullet5.png'); // 탄환 이미지 추가
     }
 
     create() {
@@ -22,7 +23,8 @@ class MainScene extends Phaser.Scene {
         this.playerStats = {
             speed: 200,
             scale: 1,
-            isInvincible: false
+            isInvincible: false,
+            canShoot: false // 공격 가능 여부 (유료 전용)
         };
         this.difficulty = {
             enemySpeed: 100,
@@ -45,6 +47,10 @@ class MainScene extends Phaser.Scene {
         // 적 그룹 및 충돌 설정
         this.enemies = this.physics.add.group();
         this.physics.add.overlap(this.player, this.enemies, this.handleGameOver, null, this);
+
+        // 탄환 그룹 및 충돌 설정
+        this.bullets = this.physics.add.group();
+        this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
 
         // 저장된 구매 내역 로드 및 적용
         this.loadPersistentRewards();
@@ -85,6 +91,12 @@ class MainScene extends Phaser.Scene {
             callback: () => {
                 this.score += 10;
                 this.scoreText.setText('Score: ' + this.score);
+
+                // 공격 가능 시 자동 사격
+                if (this.playerStats.canShoot) {
+                    this.shoot();
+                }
+
                 // 난이도 상승 (10초마다 적이 빨라짐)
                 if (this.score % 100 === 0) {
                     this.increaseDifficulty();
@@ -93,6 +105,40 @@ class MainScene extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
+    }
+
+    shoot() {
+        // 가장 가까운 적 찾기
+        let closestEnemy = null;
+        let minDistance = Infinity;
+
+        this.enemies.getChildren().forEach(enemy => {
+            const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestEnemy = enemy;
+            }
+        });
+
+        if (closestEnemy) {
+            const bullet = this.bullets.create(this.player.x, this.player.y, 'bullet');
+            this.physics.moveToObject(bullet, closestEnemy, 400);
+
+            // 2초 후 탄환 제거
+            this.time.delayedCall(2000, () => {
+                if (bullet.active) bullet.destroy();
+            });
+        }
+    }
+
+    hitEnemy(bullet, enemy) {
+        bullet.destroy();
+        enemy.destroy();
+        this.score += 50; // 파괴 시 추가 점수
+        this.scoreText.setText('Score: ' + this.score);
+
+        // 파괴 효과 (화면 플래시)
+        this.cameras.main.flash(100, 255, 255, 255, 0.1);
     }
 
     increaseDifficulty() {
@@ -122,16 +168,19 @@ class MainScene extends Phaser.Scene {
         switch (type) {
             case 'SPEED_BOOST':
                 this.playerStats.speed *= 1.5;
-                this.player.setTint(0x00ff00); // 초록색 버프 표시
+                this.playerStats.canShoot = true; // 무료 선물도 공격 능력 부여! (맛보기)
+                this.player.setTint(0x00ff00);
                 break;
             case 'GOLDEN_HERO':
                 this.playerStats.scale = 1.5;
                 this.player.setScale(1.5);
-                this.player.setTint(0xffff00); // 황금색 표시
+                this.playerStats.canShoot = true; // 유료 전용 공격
+                this.player.setTint(0xffff00);
                 break;
             case 'RESURRECT':
                 this.playerStats.isInvincible = true;
-                this.player.setAlpha(0.5); // 유령 상태 표시
+                this.playerStats.canShoot = true; // 유료 전용 공격
+                this.player.setAlpha(0.5);
                 this.time.delayedCall(5000, () => {
                     this.playerStats.isInvincible = false;
                     this.player.setAlpha(1);

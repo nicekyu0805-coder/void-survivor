@@ -35,6 +35,7 @@ function App() {
               <ul>
                 <li><strong>조작법</strong>: <strong>방향키(↑ ↓ ← →)</strong>를 이용해 캐릭터를 자유롭게 움직이세요.</li>
                 <li><strong>생존 법칙</strong>: 사면초가! 사방에서 조여오는 적들을 피해 <strong>최대한 오래 생존</strong>해야 합니다.</li>
+                <li><strong>파괴와 정복</strong>: 프리미엄 아이템을 장착하면 <strong>자동 사격</strong>이 해금되어 적들을 섬멸할 수 있습니다!</li>
                 <li><strong>강화 전략</strong>: 생존 시간에 따라 점수가 쌓이며, <strong>프리미엄 상점</strong>의 아이템으로 한계를 돌파하세요.</li>
               </ul>
             </div>
@@ -174,6 +175,11 @@ function App() {
                     <span>PREMIUM</span>
                   </div>
                   <div className="comp-row">
+                    <span>공격 능력</span>
+                    <span>불가능</span>
+                    <span><strong>자동 사격 해금</strong></span>
+                  </div>
+                  <div className="comp-row">
                     <span>이동 속도</span>
                     <span>1.5배 (임시)</span>
                     <span><strong>영구 버프</strong></span>
@@ -187,6 +193,11 @@ function App() {
                     <span>캐릭터 스킨</span>
                     <span>기본</span>
                     <span><strong>황금 아우라</strong></span>
+                  </div>
+                  <div className="comp-row">
+                    <span>추가 점수</span>
+                    <span>없음</span>
+                    <span><strong>적 처치 시 +50</strong></span>
                   </div>
                 </div>
                 <p className="marketing-text">"무료는 체험일 뿐, 진정한 랭커는 프리미엄으로 완성됩니다."</p>
