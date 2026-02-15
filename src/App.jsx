@@ -98,7 +98,7 @@ function App() {
             pointerEvents: 'none',
             fontFamily: 'sans-serif'
           }} id="v3-badge">
-            SERVER LIVE: v3.1 (Saved) ✅
+            SERVER LIVE: v3.2 (Smart) ✅
           </div>
           <style>{`
             #v3-badge { animation: v3-pulse 2s infinite; }
