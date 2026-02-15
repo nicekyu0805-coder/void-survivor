@@ -70,8 +70,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (투명도 조절하여 눈에 띄지 않게)
-        this.versionText = this.add.text(width / 2, height - 15, 'v3.3 - Stable Build', {
+        // 3. 버전 표시 간소화 (v3.4 - Dynamic)
+        this.versionText = this.add.text(width / 2, height - 15, 'v3.4 - Fullscreen Optimized', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
