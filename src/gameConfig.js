@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v3.5 - Resizable)
-        this.versionText = this.add.text(width / 2, height - 15, 'v3.5 - Landscape Optimized', {
+        // 3. 버전 표시 간소화 (v3.6 - Safety Fit)
+        this.versionText = this.add.text(width / 2, height - 15, 'v3.6 - Vertical Priority Fit', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
@@ -370,10 +370,10 @@ class GameScene extends Phaser.Scene {
 const config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: '100%',
-        height: '100%',
+        width: 800,
+        height: 600,
         autoRound: true
     },
     physics: { default: 'arcade', arcade: { gravity: { y: 0 } } },
