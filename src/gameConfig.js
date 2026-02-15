@@ -53,8 +53,8 @@ class UIScene extends Phaser.Scene {
         this.joystickBase.setDepth(100);
         this.joystickStick.setDepth(101);
 
-        // 2. 전체 화면 버튼
-        this.fsButton = this.add.text(width - 20, 20, ' [ FULLSCREEN ] ', {
+        // 2. 전체 화면 버튼 (v3.8: 여백 40px)
+        this.fsButton = this.add.text(width - 40, 40, ' [ FULLSCREEN ] ', {
             fontSize: '28px',
             fill: '#00ff00',
             backgroundColor: 'rgba(0,0,0,0.8)',
@@ -76,12 +76,12 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v3.7 - Compact)
-        this.versionText = this.add.text(width / 2, height - 15, 'v3.7 - Compact & 5s Lock', {
+        // 3. 버전 표시 간소화 (v3.8 - Safety Fit)
+        this.versionText = this.add.text(width / 2, height - 30, 'v3.8 - Vertical Priority Fit', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
-        this.scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '32px', fill: '#ffffff' });
+        this.scoreText = this.add.text(40, 40, 'Score: 0', { fontSize: '32px', fill: '#ffffff' });
 
         // 조작 변수 초기화
         this.isRepositioning = false;
@@ -146,10 +146,10 @@ class UIScene extends Phaser.Scene {
 
     // [v3.5 핵심] 실시간 레이아웃 재배치 함수
     repositionUI(w, h) {
-        // 버튼 및 텍스트 위치 갱신
-        this.fsButton.setPosition(w - 20, 20);
-        this.versionText.setPosition(w / 2, h - 15);
-        this.scoreText.setPosition(20, 20);
+        // 버튼 및 텍스트 위치 갱신 (v3.8: 안전 여백 40px로 확대)
+        this.fsButton.setPosition(w - 40, 40);
+        this.versionText.setPosition(w / 2, h - 30);
+        this.scoreText.setPosition(40, 40);
 
         // 조이스틱이 화면 밖으로 나가지 않게 보정 (저장된 위치가 있을 때만)
         if (this.joystickX > w - 100) this.joystickX = w - 100;

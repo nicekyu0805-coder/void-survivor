@@ -92,15 +92,23 @@ body {
   margin: 0 auto;
 }
 
-/* [v3.4] 풀스크린 시 강제 꽉 채움 배경 */
+/* [v3.4] 풀스크린 시 강제 꽉 채움 배경 (v3.8: 세로 정밀 피팅 보강) */
 #game-container:fullscreen,
 #game-container:-webkit-full-screen {
   max-width: none !important;
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100vh !important;
+  /* 구형 브라우저 호환성 */
+  max-height: 100dvh !important;
+  /* 신형 브라우저 동적 높이 대응 */
   border-radius: 0 !important;
   padding: 0 !important;
   margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #000 !important;
 }
 
 .how-to-play {
