@@ -168,12 +168,64 @@ body {
   margin-top: 1rem;
 }
 
-.footer {
+/* 혜택 비교 가이드 스타일 */
+.benefit-comparison {
+  margin-top: 30px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid var(--neon-blue);
+  box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.1);
+}
+
+.benefit-comparison h4 {
+  color: var(--neon-blue);
+  margin-bottom: 15px;
   text-align: center;
-  margin-top: auto;
-  padding-top: 3rem;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 1.1rem;
+}
+
+.comparison-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.comp-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+}
+
+.comp-row.head {
+  border-bottom: 2px solid var(--neon-blue);
+  font-weight: bold;
+  color: #888;
+}
+
+.comp-row span:last-child {
+  color: var(--neon-purple);
+  text-shadow: 0 0 5px rgba(188, 19, 254, 0.5);
+}
+
+.marketing-text {
+  margin-top: 15px;
   font-size: 0.8rem;
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.footer {
+  margin-top: 60px;
+  padding: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #666;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 1100px) {

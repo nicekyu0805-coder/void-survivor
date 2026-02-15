@@ -112,6 +112,34 @@ function App() {
                   />
                 </div>
               </div>
+
+              {/* 혜택 비교 가이드 추가 */}
+              <div className="benefit-comparison">
+                <h4>🏆 프리미엄 혜택 가이드</h4>
+                <div className="comparison-table">
+                  <div className="comp-row head">
+                    <span>기능</span>
+                    <span>FREE</span>
+                    <span>PREMIUM</span>
+                  </div>
+                  <div className="comp-row">
+                    <span>이동 속도</span>
+                    <span>1.5배 (임시)</span>
+                    <span><strong>영구 버프</strong></span>
+                  </div>
+                  <div className="comp-row">
+                    <span>부활 기회</span>
+                    <span>없음</span>
+                    <span><strong>무한 부활</strong></span>
+                  </div>
+                  <div className="comp-row">
+                    <span>캐릭터 스킨</span>
+                    <span>기본</span>
+                    <span><strong>황금 아우라</strong></span>
+                  </div>
+                </div>
+                <p className="marketing-text">"무료는 체험일 뿐, 진정한 랭커는 프리미엄으로 완성됩니다."</p>
+              </div>
             </div>
           </aside>
         </main>
