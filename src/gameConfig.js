@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v3.8 - Safety Fit)
-        this.versionText = this.add.text(width / 2, height - 30, 'v3.8 - Vertical Priority Fit', {
+        // 3. 버전 표시 간소화 (v3.9 - Height-Locked)
+        this.versionText = this.add.text(width / 2, height - 30, 'v3.9 - Height Priority Locked', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
