@@ -81,33 +81,6 @@ function App() {
 
         <footer className="footer" style={{ position: 'relative' }}>
           <p>© 2026 Void Survivor Studio. All Rights Reserved.</p>
-
-          {/* 캐시 확인용 전역 배지 */}
-          <div style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            background: '#ff00ff',
-            color: '#fff',
-            padding: '8px 20px',
-            borderRadius: '50px',
-            fontWeight: '900',
-            fontSize: '14px',
-            boxShadow: '0 0 20px rgba(255, 0, 255, 0.8)',
-            zIndex: 10000,
-            pointerEvents: 'none',
-            fontFamily: 'sans-serif'
-          }} id="v3-badge">
-            SERVER LIVE: v3.2 (Smart) ✅
-          </div>
-          <style>{`
-            #v3-badge { animation: v3-pulse 2s infinite; }
-            @keyframes v3-pulse {
-              0% { transform: scale(1); opacity: 1; }
-              50% { transform: scale(1.1); opacity: 0.9; }
-              100% { transform: scale(1); opacity: 1; }
-            }
-          `}</style>
         </footer>
       </div>
     </PayPalScriptProvider>
