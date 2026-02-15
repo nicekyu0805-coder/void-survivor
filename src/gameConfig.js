@@ -37,6 +37,17 @@ class MainScene extends Phaser.Scene {
             loop: true
         });
 
+        // 점수 증가 타이머 (1초마다 10점)
+        this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                this.score += 10;
+                this.scoreText.setText('Score: ' + this.score);
+            },
+            callbackScope: this,
+            loop: true
+        });
+
         // 충돌 설정 (임시 그룹)
         this.enemies = this.physics.add.group();
         this.physics.add.overlap(this.player, this.enemies, this.handleGameOver, null, this);
@@ -63,7 +74,7 @@ class MainScene extends Phaser.Scene {
     spawnEnemy() {
         const x = Phaser.Math.Between(0, 800);
         const y = Phaser.Math.Between(0, 600);
-        
+
         // 플레이어와 너무 가까운 곳에는 생성 안함
         if (Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) < 200) return;
 
