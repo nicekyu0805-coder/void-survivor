@@ -87,22 +87,7 @@ class UIScene extends Phaser.Scene {
             const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, pointer.x, pointer.y);
 
             // 조이스틱 본체 또는 근처를 터치했을 때 추적 시작
-            // v3.0 배지 (Phaser 레이어)
-            const badgeText = this.add.text(width - 20, height - 20, 'GAME v3.0 - RECONNECTED', {
-                fontSize: '14px',
-                fill: '#fff',
-                backgroundColor: '#ff00ff',
-                padding: { x: 10, y: 5 },
-                fontStyle: 'bold'
-            }).setOrigin(1, 1).setDepth(9999);
-
-            this.tweens.add({
-                targets: badgeText,
-                alpha: 0.5,
-                duration: 800,
-                yoyo: true,
-                repeat: -1
-            });
+            // v3.0 배지 (제거)
 
             if (dist < 120) {
                 this.activePointer = pointer;
@@ -356,10 +341,11 @@ class GameScene extends Phaser.Scene {
 const config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.FIT,
+        mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 800,
-        height: 600
+        height: 600,
+        autoRound: true
     },
     physics: { default: 'arcade', arcade: { gravity: { y: 0 } } },
     parent: 'game-container',
