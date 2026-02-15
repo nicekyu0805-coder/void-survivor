@@ -66,8 +66,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 최신 버전 표시 (v3.1)
-        this.versionText = this.add.text(width / 2, height - 30, 'v3.1 - Pos Persistence Active', {
+        // 3. 최신 버전 표시 (v3.2)
+        this.versionText = this.add.text(width / 2, height - 30, 'v3.2 - Smart Control Active', {
             fontSize: '18px',
             fill: '#ffd700',
             fontStyle: 'bold',
@@ -154,11 +154,16 @@ class UIScene extends Phaser.Scene {
 
         if (!this.activePointer || !this.activePointer.isDown) {
             this.chargeRing.clear();
+            this.pressDuration = 0;
             return;
         }
 
-        // 롱프레스 시간 측정 및 충전 효과
-        if (this.joystickActive && !this.isRepositioning) {
+        // [v3.2 핵심] 조작(드래그) 중인지 확인 (중심에서 30px 이상인지)
+        const distFromCenter = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, this.activePointer.x, this.activePointer.y);
+        const isDraggingForMovement = distFromCenter > 30;
+
+        // 롱프레스 시간 측정 및 충전 효과 (제자리에 가만히 있을 때만 작동)
+        if (this.joystickActive && !this.isRepositioning && !isDraggingForMovement) {
             this.pressDuration += delta;
 
             // 충전 링 그리기
@@ -169,17 +174,21 @@ class UIScene extends Phaser.Scene {
             this.chargeRing.arc(this.joystickX, this.joystickY, 95, Phaser.Math.DegToRad(-90), Phaser.Math.DegToRad(-90 + 360 * progress));
             this.chargeRing.strokePath();
 
-            if (this.pressDuration > 600) { // 0.6초간 유지 시 편집 모드 진입
+            if (this.pressDuration > 600) { // 0.6초간 제자리에 유지 시 편집 모드 진입
                 this.isRepositioning = true;
                 this.chargeRing.clear();
                 this.joystickBase.clear();
-                this.joystickBase.fillStyle(0xffffff, 0.5).fillCircle(0, 0, 100); // 편집 모드: 흰색 원
-                this.joystickBase.lineStyle(6, 0xffd700, 1).strokeCircle(0, 0, 100); // 황금 테두리
+                this.joystickBase.fillStyle(0xffffff, 0.5).fillCircle(0, 0, 100);
+                this.joystickBase.lineStyle(6, 0xffd700, 1).strokeCircle(0, 0, 100);
                 this.joystickStick.setScale(1.5).setAlpha(1);
 
-                if (window.navigator.vibrate) window.navigator.vibrate(100); // 진동 피드백
-                console.log("Joystick Edit Mode Active");
+                if (window.navigator.vibrate) window.navigator.vibrate(100);
+                console.log("Joystick Edit Mode Active (Stationary Success)");
             }
+        } else if (isDraggingForMovement && !this.isRepositioning) {
+            // 조작 중에는 타이머 리셋 및 링 제거
+            this.pressDuration = 0;
+            this.chargeRing.clear();
         }
 
         if (this.isRepositioning) {
