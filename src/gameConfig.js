@@ -42,11 +42,11 @@ class UIScene extends Phaser.Scene {
         }
 
         this.joystickBase = this.add.graphics();
-        this.joystickBase.fillStyle(0xff00ff, 0.2).fillCircle(0, 0, 80);
-        this.joystickBase.lineStyle(4, 0x00ff00, 0.8).strokeCircle(0, 0, 80);
+        this.joystickBase.fillStyle(0xff00ff, 0.2).fillCircle(0, 0, 53); // 80 * 2/3
+        this.joystickBase.lineStyle(4, 0x00ff00, 0.8).strokeCircle(0, 0, 53);
 
         this.joystickStick = this.add.graphics();
-        this.joystickStick.fillStyle(0x00ff00, 0.9).fillCircle(0, 0, 40);
+        this.joystickStick.fillStyle(0x00ff00, 0.9).fillCircle(0, 0, 27); // 40 * 2/3
 
         this.joystickBase.setPosition(this.joystickX, this.joystickY);
         this.joystickStick.setPosition(this.joystickX, this.joystickY);
@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v3.6 - Safety Fit)
-        this.versionText = this.add.text(width / 2, height - 15, 'v3.6 - Vertical Priority Fit', {
+        // 3. 버전 표시 간소화 (v3.7 - Compact)
+        this.versionText = this.add.text(width / 2, height - 15, 'v3.7 - Compact & 5s Lock', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
@@ -129,10 +129,10 @@ class UIScene extends Phaser.Scene {
                 this.pressDuration = 0;
                 this.chargeRing.clear();
 
-                // 원래 상태로 복원
+                // 원래 상태로 복원 (2/3 크기 반영)
                 this.joystickBase.clear();
-                this.joystickBase.fillStyle(0xff00ff, 0.2).fillCircle(0, 0, 80);
-                this.joystickBase.lineStyle(4, 0x00ff00, 0.8).strokeCircle(0, 0, 80);
+                this.joystickBase.fillStyle(0xff00ff, 0.2).fillCircle(0, 0, 53);
+                this.joystickBase.lineStyle(4, 0x00ff00, 0.8).strokeCircle(0, 0, 53);
                 this.joystickBase.setScale(1).setAlpha(0.6);
 
                 this.joystickStick.setScale(1).setAlpha(0.8);
@@ -177,20 +177,20 @@ class UIScene extends Phaser.Scene {
         if (this.joystickActive && !this.isRepositioning && !isDraggingForMovement) {
             this.pressDuration += delta;
 
-            // 충전 링 그리기
-            const progress = Math.min(this.pressDuration / 600, 1);
+            // 충전 링 그리기 (5초 타이머 반영)
+            const progress = Math.min(this.pressDuration / 5000, 1);
             this.chargeRing.clear();
             this.chargeRing.lineStyle(6, 0xffffff, 0.8);
             this.chargeRing.beginPath();
-            this.chargeRing.arc(this.joystickX, this.joystickY, 95, Phaser.Math.DegToRad(-90), Phaser.Math.DegToRad(-90 + 360 * progress));
+            this.chargeRing.arc(this.joystickX, this.joystickY, 63, Phaser.Math.DegToRad(-90), Phaser.Math.DegToRad(-90 + 360 * progress));
             this.chargeRing.strokePath();
 
-            if (this.pressDuration > 600) { // 0.6초간 제자리에 유지 시 편집 모드 진입
+            if (this.pressDuration > 5000) { // 5초간 제자리에 유지 시 편집 모드 진입
                 this.isRepositioning = true;
                 this.chargeRing.clear();
                 this.joystickBase.clear();
-                this.joystickBase.fillStyle(0xffffff, 0.5).fillCircle(0, 0, 100);
-                this.joystickBase.lineStyle(6, 0xffd700, 1).strokeCircle(0, 0, 100);
+                this.joystickBase.fillStyle(0xffffff, 0.5).fillCircle(0, 0, 67);
+                this.joystickBase.lineStyle(6, 0xffd700, 1).strokeCircle(0, 0, 67);
                 this.joystickStick.setScale(1.5).setAlpha(1);
 
                 if (window.navigator.vibrate) window.navigator.vibrate(100);
@@ -214,7 +214,7 @@ class UIScene extends Phaser.Scene {
             const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, this.activePointer.x, this.activePointer.y);
             const angle = Phaser.Math.Angle.Between(this.joystickX, this.joystickY, this.activePointer.x, this.activePointer.y);
 
-            const maxDist = 80;
+            const maxDist = 53; // 80 * 2/3
             const finalDist = Math.min(dist, maxDist);
 
             const stickX = this.joystickX + Math.cos(angle) * finalDist;
