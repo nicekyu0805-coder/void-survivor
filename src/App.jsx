@@ -35,7 +35,7 @@ function App() {
               <ul>
                 <li><strong>조작법</strong>: <strong>방향키(↑ ↓ ← →)</strong>를 이용해 캐릭터를 자유롭게 움직이세요.</li>
                 <li><strong>생존 법칙</strong>: 사면초가! 사방에서 조여오는 적들을 피해 <strong>최대한 오래 생존</strong>해야 합니다.</li>
-                <li><strong>파괴와 정복</strong>: 프리미엄 아이템을 장착하면 <strong>자동 사격</strong>이 해금되어 적들을 섬멸할 수 있습니다!</li>
+                <li><strong>파괴와 정복</strong>: 프리미엄 아이템 장착 시 <strong>자동 사격(Auto-Fire)</strong>이 활성화됩니다. (별도 공격 키 없음, 자동 추적 사격!)</li>
                 <li><strong>강화 전략</strong>: 생존 시간에 따라 점수가 쌓이며, <strong>프리미엄 상점</strong>의 아이템으로 한계를 돌파하세요.</li>
               </ul>
             </div>
@@ -177,7 +177,7 @@ function App() {
                   <div className="comp-row">
                     <span>공격 능력</span>
                     <span>불가능</span>
-                    <span><strong>자동 사격 해금</strong></span>
+                    <span><strong>자동 추적 사격</strong></span>
                   </div>
                   <div className="comp-row">
                     <span>이동 속도</span>
