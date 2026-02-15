@@ -7,6 +7,18 @@ class MainScene extends Phaser.Scene {
         this.cursors = null;
         this.score = 0;
         this.scoreText = null;
+        this.isGameOver = false;
+
+        // 보상 관련 변수
+        this.playerStats = {
+            speed: 200,
+            scale: 1,
+            isInvincible: false
+        };
+        this.difficulty = {
+            enemySpeed: 100,
+            spawnRate: 1000
+        };
     }
 
     preload() {
@@ -23,39 +35,96 @@ class MainScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(400, 300, 'player');
         this.player.setCollideWorldBounds(true);
 
-        // 점수 텍스트
+        // 점수 초기화 (재시작 시 필수)
+        this.score = 0;
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
 
         // 입력 설정
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        // 적 그룹 및 충돌 설정
+        this.enemies = this.physics.add.group();
+        this.physics.add.overlap(this.player, this.enemies, this.handleGameOver, null, this);
+
+        // 타이머 및 이벤트 초기화
+        this.initTimers();
+
+        // 외부(React)로부터 보상 이벤트를 받기 위한 전역 리스너 등록
+        window.applyGameReward = (rewardType) => {
+            this.applyReward(rewardType);
+        };
+    }
+
+    initTimers() {
+        this.time.removeAllEvents();
+
         // 적 생성 타이머
-        this.time.addEvent({
-            delay: 1000,
+        this.spawnTimer = this.time.addEvent({
+            delay: this.difficulty.spawnRate,
             callback: this.spawnEnemy,
             callbackScope: this,
             loop: true
         });
 
-        // 점수 증가 타이머 (1초마다 10점)
+        // 점수 증가 타이머
         this.time.addEvent({
             delay: 1000,
             callback: () => {
                 this.score += 10;
                 this.scoreText.setText('Score: ' + this.score);
+                // 난이도 상승 (10초마다 적이 빨라짐)
+                if (this.score % 100 === 0) {
+                    this.increaseDifficulty();
+                }
             },
             callbackScope: this,
             loop: true
         });
+    }
 
-        // 충돌 설정 (임시 그룹)
-        this.enemies = this.physics.add.group();
-        this.physics.add.overlap(this.player, this.enemies, this.handleGameOver, null, this);
+    increaseDifficulty() {
+        this.difficulty.enemySpeed += 10;
+        this.difficulty.spawnRate = Math.max(300, this.difficulty.spawnRate - 50);
+
+        // 스폰 타이머 업데이트
+        this.spawnTimer.remove();
+        this.spawnTimer = this.time.addEvent({
+            delay: this.difficulty.spawnRate,
+            callback: this.spawnEnemy,
+            callbackScope: this,
+            loop: true
+        });
+    }
+
+    applyReward(type) {
+        if (!this.player) return;
+
+        switch (type) {
+            case 'SPEED_BOOST':
+                this.playerStats.speed *= 1.5;
+                this.player.setTint(0x00ff00); // 초록색 버프 표시
+                break;
+            case 'GOLDEN_HERO':
+                this.playerStats.scale = 1.5;
+                this.player.setScale(1.5);
+                this.player.setTint(0xffff00); // 황금색 표시
+                break;
+            case 'RESURRECT':
+                this.playerStats.isInvincible = true;
+                this.player.setAlpha(0.5); // 유령 상태 표시
+                this.time.delayedCall(5000, () => {
+                    this.playerStats.isInvincible = false;
+                    this.player.setAlpha(1);
+                });
+                break;
+        }
     }
 
     update() {
+        if (this.isGameOver) return;
+
         // 플레이어 이동 로직
-        const speed = 200;
+        const speed = this.playerStats.speed;
         this.player.setVelocity(0);
 
         if (this.cursors.left.isDown) {
@@ -79,16 +148,28 @@ class MainScene extends Phaser.Scene {
         if (Phaser.Math.Distance.Between(x, y, this.player.x, this.player.y) < 200) return;
 
         const enemy = this.enemies.create(x, y, 'enemy');
-        this.physics.moveToObject(enemy, this.player, 100);
+        this.physics.moveToObject(enemy, this.player, this.difficulty.enemySpeed);
     }
 
     handleGameOver() {
+        if (this.isGameOver || this.playerStats.isInvincible) return;
+        this.isGameOver = true;
+
         this.physics.pause();
         this.player.setTint(0xff0000);
+
+        // 점수 타이머를 포함한 모든 타이머 정지
+        this.time.removeAllEvents();
+
         this.add.text(400, 300, 'GAME OVER', { fontSize: '64px', fill: '#f00' }).setOrigin(0.5);
+        this.add.text(400, 380, 'Final Score: ' + this.score, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+
         this.time.addEvent({
-            delay: 2000,
-            callback: () => this.scene.restart(),
+            delay: 3000,
+            callback: () => {
+                this.isGameOver = false;
+                this.scene.restart();
+            },
             loop: false
         });
     }

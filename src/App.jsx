@@ -39,8 +39,16 @@ function App() {
               <div className="item free-gift">
                 <span className="item-name">무료 일일 보너스</span>
                 <span className="item-price">FREE</span>
-                <p className="item-desc">오늘의 행운! 공격 속도가 2배로 증가합니다.</p>
-                <button className="claim-button" onClick={() => alert('무료 보상이 지급되었습니다! 2배 빠른 공격을 즐기세요.')}>
+                <p className="item-desc">오늘의 행운! 이동 속도가 1.5배로 증가합니다.</p>
+                <button
+                  className="claim-button"
+                  onClick={() => {
+                    if (window.applyGameReward) {
+                      window.applyGameReward('SPEED_BOOST');
+                      alert('이동 속도가 1.5배 증가했습니다! ⚡');
+                    }
+                  }}
+                >
                   지금 받기
                 </button>
               </div>
@@ -65,8 +73,10 @@ function App() {
                     }}
                     onApprove={(data, actions) => {
                       return actions.order.capture().then((details) => {
-                        alert(`결제 완료! ${details.payer.name.given_name} 님, 감사합니다.`);
-                        // 게임 내 보상 지급 로직 추가 예정
+                        if (window.applyGameReward) {
+                          window.applyGameReward('GOLDEN_HERO');
+                          alert(`${details.payer.name.given_name} 님, 황금 영웅으로 변신했습니다! ✨`);
+                        }
                       });
                     }}
                   />
@@ -76,9 +86,30 @@ function App() {
               <div className="item">
                 <span className="item-name">무한 부활권</span>
                 <span className="item-price">$1.99</span>
-                <p className="item-desc">죽어도 게임이 끝나지 않는 마법</p>
+                <p className="item-desc">죽어도 5초간 무적 상태로 부활합니다!</p>
                 <div className="pay-button">
-                  <PayPalButtons style={{ layout: "vertical", height: 40 }} />
+                  <PayPalButtons
+                    style={{ layout: "vertical", height: 40 }}
+                    createOrder={(data, actions) => {
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              value: "1.99",
+                            },
+                          },
+                        ],
+                      });
+                    }}
+                    onApprove={(data, actions) => {
+                      return actions.order.capture().then((details) => {
+                        if (window.applyGameReward) {
+                          window.applyGameReward('RESURRECT');
+                          alert(`부활권 구매 완료! 5초간 무적 상태가 됩니다. 👻`);
+                        }
+                      });
+                    }}
+                  />
                 </div>
               </div>
             </div>
