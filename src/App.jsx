@@ -80,7 +80,7 @@ function App() {
         </main>
 
         <footer className="footer">
-          <p>© 2026 Void Survivor Studio. All Rights Reserved.</p>
+          <p>© 2026 Void Survivor Studio. All Rights Reserved. <span style={{ color: '#888', marginLeft: '10px' }}>[ v2.9 - Build Success ]</span></p>
         </footer>
       </div>
     </PayPalScriptProvider>

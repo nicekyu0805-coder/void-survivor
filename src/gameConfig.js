@@ -40,55 +40,180 @@ class UIScene extends Phaser.Scene {
         this.joystickStick.setDepth(101);
 
         // 2. 전체 화면 버튼
-        const fsButton = this.add.text(width - 20, 20, ' [ FULLSCREEN MODE ] ', {
-            fontSize: '32px',
+        const fsButton = this.add.text(width - 20, 20, ' [ FULLSCREEN ] ', {
+            fontSize: '28px',
             fill: '#00ff00',
             backgroundColor: 'rgba(0,0,0,0.8)',
             padding: { x: 15, y: 10 },
             fontStyle: 'bold'
-        }).setOrigin(1, 0).setInteractive({ useHandCursor: true });
+        }).setOrigin(1, 0).setInteractive({ useHandCursor: true }).setDepth(1000);
 
         fsButton.on('pointerdown', () => {
             if (this.scale.isFullscreen) {
                 this.scale.stopFullscreen();
-                fsButton.setText(' [ FULLSCREEN MODE ] ');
+                fsButton.setText(' [ FULLSCREEN ] ');
             } else {
                 this.scale.startFullscreen();
-                fsButton.setText(' [ EXIT FULLSCREEN ] ');
+                fsButton.setText(' [ EXIT FS ] ');
             }
         });
 
-        // 3. 배포 확인용 버전 텍스트 (눈에 확 띄게)
-        this.add.text(width / 2, 50, 'V2.2 - EMERGENCY UI FIX', {
-            fontSize: '24px',
-            fill: '#ff0000',
-            backgroundColor: '#fff',
-            fontStyle: 'bold'
-        }).setOrigin(0.5);
-
-        // 4. 점수 표시
+        // 3. 최신 버전 표시 (확인용 황금색 크고 뚜렷하게)
+        this.versionText = this.add.text(width / 2, height - 30, 'v3.0 - ULTIMATE FIX ACTIVE', {
+            fontSize: '18px',
+            fill: '#ffd700',
+            fontStyle: 'bold',
+            backgroundColor: '#000'
+        }).setOrigin(0.5).setDepth(1000);
         this.scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '32px', fill: '#ffffff' });
 
-        // 입력 리스너 (조이스틱용)
+        // 조작 변수 초기화
+        this.isRepositioning = false;
+        this.pressDuration = 0;
+        this.activePointer = null;
+
+        // 롱프레스 충전용 그래픽
+        this.chargeRing = this.add.graphics().setDepth(199);
+
         this.input.on('pointerdown', (pointer) => {
             const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, pointer.x, pointer.y);
+
+            // 조이스틱 본체 또는 근처를 터치했을 때 추적 시작
+            // This HTML/CSS/React-like code is not valid in a Phaser JavaScript file.
+            // It will cause a syntax error if uncommented or directly inserted.
+            // If the intention was to create a Phaser UI element with similar styling,
+            // it would need to be implemented using Phaser's graphics and text objects.
+            /*
+            <footer className="footer" style={{ position: 'relative' }}>
+          <p>© 2026 Void Survivor Studio. All Rights Reserved.</p>
+          <div style={{ 
+            position: 'fixed', 
+            bottom: '10px', 
+            right: '10px', 
+            background: '#ff00ff', 
+            color: '#fff', 
+            padding: '5px 15px', 
+            borderRadius: '20px', 
+            fontWeight: 'bold',
+            fontSize: '12px',
+            boxShadow: '0 0 15px #ff00ff',
+            zIndex: 9999,
+            animation: 'pulse 1.5s infinite'
+          }}>
+            LIVE v3.0 - NEW JOystick ACTIVE
+          </div>
+          <style>{`
+            @keyframes pulse {
+              0% { transform: scale(1); opacity: 1; }
+              50% { transform: scale(1.1); opacity: 0.8; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+          `}</style>
+        </footer>
+        */
+            // Adding a Phaser text object as a badge instead, based on the visual description.
+            const badgeText = this.add.text(width - 10, height - 10, 'LIVE v3.0 - NEW JOystick ACTIVE', {
+                fontSize: '12px',
+                fill: '#fff',
+                backgroundColor: '#ff00ff',
+                padding: { x: 15, y: 5 },
+                fontStyle: 'bold'
+            }).setOrigin(1, 1).setDepth(9999);
+
+            // Simple pulse animation for the badge
+            this.tweens.add({
+                targets: badgeText,
+                scale: 1.1,
+                alpha: 0.8,
+                duration: 750,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+
             if (dist < 120) {
+                this.activePointer = pointer;
+                this.pressDuration = 0;
+                this.joystickActive = true;
+            } else if (pointer.x < width * 0.4) {
+                // 빈 공간 터치 시 즉시 이동 (v2.5 기능 유지)
+                this.joystickX = pointer.x;
+                this.joystickY = pointer.y;
+                this.joystickBase.setPosition(this.joystickX, this.joystickY);
+                this.joystickStick.setPosition(this.joystickX, this.joystickY);
+                this.activePointer = pointer;
                 this.joystickActive = true;
             }
         });
 
-        this.input.on('pointerup', () => {
-            this.joystickActive = false;
-            this.joystickStick.setPosition(this.joystickX, this.joystickY);
-            GameState.joystickData.isDown = false;
+        this.input.on('pointerup', (pointer) => {
+            if (this.activePointer === pointer) {
+                this.isRepositioning = false;
+                this.joystickActive = false;
+                this.activePointer = null;
+                this.pressDuration = 0;
+                this.chargeRing.clear();
+
+                // 원래 상태로 복원
+                this.joystickBase.clear();
+                this.joystickBase.fillStyle(0xff00ff, 0.2).fillCircle(0, 0, 80);
+                this.joystickBase.lineStyle(4, 0x00ff00, 0.8).strokeCircle(0, 0, 80);
+                this.joystickBase.setScale(1).setAlpha(0.6);
+
+                this.joystickStick.setScale(1).setAlpha(0.8);
+                this.joystickStick.setPosition(this.joystickX, this.joystickY);
+
+                GameState.joystickData.isDown = false;
+                GameState.joystickData.force = 0;
+            }
         });
     }
 
-    update() {
-        const pointer = this.input.activePointer;
-        if (this.joystickActive && pointer.isDown) {
-            const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, pointer.x, pointer.y);
-            const angle = Phaser.Math.Angle.Between(this.joystickX, this.joystickY, pointer.x, pointer.y);
+    update(time, delta) {
+        // UI 텍스트들은 항상 업데이트 (포인터 상태 무관)
+        this.scoreText.setText('Score: ' + GameState.score);
+
+        if (!this.activePointer || !this.activePointer.isDown) {
+            this.chargeRing.clear();
+            return;
+        }
+
+        // 롱프레스 시간 측정 및 충전 효과
+        if (this.joystickActive && !this.isRepositioning) {
+            this.pressDuration += delta;
+
+            // 충전 링 그리기
+            const progress = Math.min(this.pressDuration / 600, 1);
+            this.chargeRing.clear();
+            this.chargeRing.lineStyle(6, 0xffffff, 0.8);
+            this.chargeRing.beginPath();
+            this.chargeRing.arc(this.joystickX, this.joystickY, 95, Phaser.Math.DegToRad(-90), Phaser.Math.DegToRad(-90 + 360 * progress));
+            this.chargeRing.strokePath();
+
+            if (this.pressDuration > 600) { // 0.6초간 유지 시 편집 모드 진입
+                this.isRepositioning = true;
+                this.chargeRing.clear();
+                this.joystickBase.clear();
+                this.joystickBase.fillStyle(0xffffff, 0.5).fillCircle(0, 0, 100); // 편집 모드: 흰색 원
+                this.joystickBase.lineStyle(6, 0xffd700, 1).strokeCircle(0, 0, 100); // 황금 테두리
+                this.joystickStick.setScale(1.5).setAlpha(1);
+
+                if (window.navigator.vibrate) window.navigator.vibrate(100); // 진동 피드백
+                console.log("Joystick Edit Mode Active");
+            }
+        }
+
+        if (this.isRepositioning) {
+            // 위치 조정 모드: 조이스틱 본체가 손가락을 따라감
+            this.joystickX = this.activePointer.x;
+            this.joystickY = this.activePointer.y;
+            this.joystickBase.setPosition(this.joystickX, this.joystickY);
+            this.joystickStick.setPosition(this.joystickX, this.joystickY);
+            GameState.joystickData.isDown = false; // 이동 중에는 캐릭터 정지
+        } else if (this.joystickActive) {
+            // 일반 조작 모드
+            const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, this.activePointer.x, this.activePointer.y);
+            const angle = Phaser.Math.Angle.Between(this.joystickX, this.joystickY, this.activePointer.x, this.activePointer.y);
 
             const maxDist = 80;
             const finalDist = Math.min(dist, maxDist);
@@ -99,9 +224,8 @@ class UIScene extends Phaser.Scene {
 
             GameState.joystickData.isDown = true;
             GameState.joystickData.angle = angle;
+            GameState.joystickData.force = finalDist / maxDist;
         }
-
-        this.scoreText.setText('Score: ' + GameState.score);
     }
 }
 
@@ -229,10 +353,14 @@ class GameScene extends Phaser.Scene {
         if (GameState.isGameOver) return;
         this.player.setVelocity(0);
 
-        // 조이스틱 입력 처리
+        // 조이스틱 입력 처리 (아날로그 정밀 제어)
         if (GameState.joystickData.isDown) {
             const angle = GameState.joystickData.angle;
-            this.player.setVelocity(Math.cos(angle) * GameState.speed, Math.sin(angle) * GameState.speed);
+            const force = GameState.joystickData.force || 1;
+            this.player.setVelocity(
+                Math.cos(angle) * GameState.speed * force,
+                Math.sin(angle) * GameState.speed * force
+            );
         }
     }
 }
