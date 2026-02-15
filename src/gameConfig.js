@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v3.4 - Dynamic)
-        this.versionText = this.add.text(width / 2, height - 15, 'v3.4 - Fullscreen Optimized', {
+        // 3. 버전 표시 간소화 (v3.5 - Resizable)
+        this.versionText = this.add.text(width / 2, height - 15, 'v3.5 - Landscape Optimized', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
@@ -90,6 +90,9 @@ class UIScene extends Phaser.Scene {
 
         // 롱프레스 충전용 그래픽
         this.chargeRing = this.add.graphics().setDepth(199);
+
+        // [v3.5] 초기 레이아웃 강제 설정
+        this.repositionUI(this.scale.width, this.scale.height);
 
         this.input.on('pointerdown', (pointer) => {
             const dist = Phaser.Math.Distance.Between(this.joystickX, this.joystickY, pointer.x, pointer.y);
