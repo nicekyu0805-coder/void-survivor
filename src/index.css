@@ -21,6 +21,13 @@ body {
   padding: 2rem;
 }
 
+/* 모바일 전용 패딩 제거 */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+}
+
 .header {
   text-align: center;
   margin-bottom: 2rem;
@@ -52,6 +59,13 @@ body {
   width: 100%;
 }
 
+@media (max-width: 1100px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .game-section {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -62,6 +76,21 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  overflow: hidden;
+  /* 모바일에서 삐져나오는 것 방지 */
+}
+
+#game-container {
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+  touch-action: none;
+  /* 브라우저 기본 터치 동작(스크롤 등) 방지 - 게임 터치 우선 */
+  margin: 0 auto;
 }
 
 .how-to-play {

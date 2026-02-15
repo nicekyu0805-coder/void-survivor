@@ -20,7 +20,7 @@ const GameComponent = () => {
     }, []);
 
     return (
-        <div id="game-container" ref={gameContainerRef} style={{ width: '800px', height: '600px', margin: '20px auto', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 0 20px rgba(0,255,255,0.3)' }}>
+        <div id="game-container" ref={gameContainerRef} className="game-container-wrapper">
             {/* Phaser 게임이 여기 렌더링됩니다 */}
         </div>
     );

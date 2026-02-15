@@ -30,177 +30,50 @@ function App() {
 
         <main className="main-layout">
           <div className="game-section">
+            <GameComponent />
+
             <div className="how-to-play">
               <h3>🎮 게임 방법 (How to Play)</h3>
               <ul>
                 <li><strong>PC 조작</strong>: <strong>방향키(↑ ↓ ← →)</strong>로 캐릭터를 정밀하게 움직이세요.</li>
-                <li><strong>모바일 조작</strong>: 화면의 <strong>이동하고 싶은 곳을 터치</strong>하세요! 캐릭터가 손가락을 따라 실시간으로 따라옵니다. (드래그하면 계속 따라와요!)</li>
+                <li><strong>모바일 조작</strong>: 화면 왼쪽 하단의 <strong>가상 조이스틱</strong>을 드래그하여 움직이세요! 손가락이 캐릭터를 가리지 않아 편리합니다.</li>
+                <li><strong>전체 화면</strong>: 우측 상단의 <strong>[ Fullscreen ]</strong>을 터치해 몰입감 넘치는 전체 화면으로 즐기세요!</li>
                 <li><strong>자동 사격</strong>: 프리미엄 아이템 장착 시 <strong>자동으로 가장 가까운 적</strong>을 조준 사격합니다. 조작은 오직 이동에만 집중하세요!</li>
-                <li><strong>강화 전략</strong>: 생존 시간에 따라 점수가 쌓이며, <strong>프리미엄 상점</strong>의 아이템으로 한계를 돌파하세요.</li>
               </ul>
             </div>
 
-            {/* 가상 글로벌 랭킹 섹션 추가 */}
             <div className="hall-of-fame">
               <h3>🏆 Hall of Fame (Global)</h3>
               <div className="ranking-list">
-                <div className="rank-item gold">
-                  <span className="rank-num">1</span>
-                  <span className="rank-flag">🇺🇸</span>
-                  <span className="rank-id">ShadowMaster</span>
-                  <span className="rank-score">12,450</span>
-                </div>
-                <div className="rank-item silver">
-                  <span className="rank-num">2</span>
-                  <span className="rank-flag">🇰🇷</span>
-                  <span className="rank-id">K-Survivor</span>
-                  <span className="rank-score">10,890</span>
-                </div>
-                <div className="rank-item bronze">
-                  <span className="rank-num">3</span>
-                  <span className="rank-flag">🇯🇵</span>
-                  <span className="rank-id">NeonNinja</span>
-                  <span className="rank-score">9,120</span>
-                </div>
-                <div className="rank-item">
-                  <span className="rank-num">4</span>
-                  <span className="rank-flag">🇩🇪</span>
-                  <span className="rank-id">VoidWalker</span>
-                  <span className="rank-score">7,540</span>
-                </div>
-                <div className="rank-item">
-                  <span className="rank-num">5</span>
-                  <span className="rank-flag">🇫🇷</span>
-                  <span className="rank-id">StarDust</span>
-                  <span className="rank-score">6,210</span>
-                </div>
+                <div className="rank-item gold"><span className="rank-num">1</span><span className="rank-flag">🇺🇸</span><span className="rank-id">ShadowMaster</span><span className="rank-score">12,450</span></div>
+                <div className="rank-item silver"><span className="rank-num">2</span><span className="rank-flag">🇰🇷</span><span className="rank-id">K-Survivor</span><span className="rank-score">10,890</span></div>
+                <div className="rank-item bronze"><span className="rank-num">3</span><span className="rank-flag">🇯🇵</span><span className="rank-id">NeonNinja</span><span className="rank-score">9,120</span></div>
               </div>
-              <p className="ranking-footer">전 세계 12,453명의 생존자가 경쟁 중입니다!</p>
             </div>
-
-            <GameComponent />
           </div>
 
           <aside className="premium-shop">
             <div className="shop-card">
               <h2>프리미엄 상점</h2>
-
-              {/* 무료 보상 섹션 추가 */}
               <div className="item free-gift">
                 <span className="item-name">무료 일일 보너스</span>
                 <span className="item-price">FREE</span>
                 <p className="item-desc">오늘의 행운! 이동 속도가 즉시 1.5배 빨라집니다.</p>
-                <button
-                  className="claim-button"
-                  onClick={() => {
-                    if (window.applyGameReward) {
-                      window.applyGameReward('SPEED_BOOST');
-                      alert('신속의 축복! 이동 속도가 1.5배 빨라졌습니다! ⚡');
-                    }
-                  }}
-                >
-                  지금 받기
-                </button>
+                <button className="claim-button" onClick={() => { if (window.applyGameReward) { window.applyGameReward('SPEED_BOOST'); alert('신속의 축복! ⚡'); } }}>지금 받기</button>
               </div>
 
               <div className="item">
                 <span className="item-name">황금 영웅 팩</span>
                 <span className="item-price">$4.99</span>
-                <p className="item-desc">위엄 있는 황금 영웅으로 변신! 모든 능력치가 20% 영구 상승합니다.</p>
-                <div className="pay-button">
-                  <PayPalButtons
-                    style={{ layout: "vertical", height: 40 }}
-                    createOrder={(data, actions) => {
-                      return actions.order.create({
-                        purchase_units: [
-                          {
-                            amount: {
-                              value: "4.99",
-                            },
-                          },
-                        ],
-                      });
-                    }}
-                    onApprove={(data, actions) => {
-                      return actions.order.capture().then((details) => {
-                        savePurchase('GOLDEN_HERO'); // 결제 정보 영구 저장
-                        if (window.applyGameReward) {
-                          window.applyGameReward('GOLDEN_HERO');
-                          alert(`전설의 탄생! ${details.payer.name.given_name} 님이 황금 영웅으로 각성했습니다! ✨`);
-                        }
-                      });
-                    }}
-                  />
-                </div>
+                <p className="item-desc">능력치 20% 영구 상승!</p>
+                <div className="pay-button"><PayPalButtons style={{ layout: "vertical", height: 40 }} createOrder={(data, actions) => actions.order.create({ purchase_units: [{ amount: { value: "4.99" } }] })} onApprove={(data, actions) => actions.order.capture().then(() => { savePurchase('GOLDEN_HERO'); if (window.applyGameReward) window.applyGameReward('GOLDEN_HERO'); })} /></div>
               </div>
 
               <div className="item">
                 <span className="item-name">무한 부활권</span>
                 <span className="item-price">$1.99</span>
-                <p className="item-desc">죽음은 끝이 아닙니다. 부활 시 5초간 무적 상태가 되어 반격하세요!</p>
-                <div className="pay-button">
-                  <PayPalButtons
-                    style={{ layout: "vertical", height: 40 }}
-                    createOrder={(data, actions) => {
-                      return actions.order.create({
-                        purchase_units: [
-                          {
-                            amount: {
-                              value: "1.99",
-                            },
-                          },
-                        ],
-                      });
-                    }}
-                    onApprove={(data, actions) => {
-                      return actions.order.capture().then((details) => {
-                        savePurchase('RESURRECT'); // 결제 정보 영구 저장
-                        if (window.applyGameReward) {
-                          window.applyGameReward('RESURRECT');
-                          alert(`불사조의 가호! 부활과 함께 5초간 무적 상태가 됩니다. 👻`);
-                        }
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* 혜택 비교 가이드 추가 */}
-              <div className="benefit-comparison">
-                <h4>🏆 프리미엄 혜택 가이드</h4>
-                <div className="comparison-table">
-                  <div className="comp-row head">
-                    <span>기능</span>
-                    <span>FREE</span>
-                    <span>PREMIUM</span>
-                  </div>
-                  <div className="comp-row">
-                    <span>공격 능력</span>
-                    <span>불가능</span>
-                    <span><strong>자동 추적 사격</strong></span>
-                  </div>
-                  <div className="comp-row">
-                    <span>이동 속도</span>
-                    <span>1.5배 (임시)</span>
-                    <span><strong>영구 버프</strong></span>
-                  </div>
-                  <div className="comp-row">
-                    <span>부활 기회</span>
-                    <span>없음</span>
-                    <span><strong>무한 부활</strong></span>
-                  </div>
-                  <div className="comp-row">
-                    <span>캐릭터 스킨</span>
-                    <span>기본</span>
-                    <span><strong>황금 아우라</strong></span>
-                  </div>
-                  <div className="comp-row">
-                    <span>추가 점수</span>
-                    <span>없음</span>
-                    <span><strong>적 처치 시 +50</strong></span>
-                  </div>
-                </div>
-                <p className="marketing-text">"무료는 체험일 뿐, 진정한 랭커는 프리미엄으로 완성됩니다."</p>
+                <p className="item-desc">부활 시 5초 무적!</p>
+                <div className="pay-button"><PayPalButtons style={{ layout: "vertical", height: 40 }} createOrder={(data, actions) => actions.order.create({ purchase_units: [{ amount: { value: "1.99" } }] })} onApprove={(data, actions) => actions.order.capture().then(() => { savePurchase('RESURRECT'); if (window.applyGameReward) window.applyGameReward('RESURRECT'); })} /></div>
               </div>
             </div>
           </aside>
