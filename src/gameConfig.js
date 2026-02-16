@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v4.2 - Reposition Guide)
-        this.versionText = this.add.text(width / 2, height - 30, 'v4.2 - Repositioning Guide Added', {
+        // 3. 버전 표시 간소화 (v5.0 - Service Launch)
+        this.versionText = this.add.text(width / 2, height - 30, 'v5.0 - Service Infrastructure Active', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
@@ -357,12 +357,50 @@ class GameScene extends Phaser.Scene {
         this.physics.pause();
         this.player.setTint(0xff0000);
         const { width, height } = this.scale;
-        this.add.text(width / 2, height / 2, 'GAME OVER', { fontSize: '64px', fill: '#f00' }).setOrigin(0.5).setDepth(200);
+
+        // 1. 배경 어둡게 처리
+        const overlay = this.add.graphics();
+        overlay.fillStyle(0x000000, 0.7);
+        overlay.fillRect(0, 0, width, height);
+        overlay.setDepth(200);
+
+        // 2. 최고 점수 갱신 로직
+        const bestScore = parseInt(localStorage.getItem('void_survivor_best_score') || '0');
+        const isNewBest = GameState.score > bestScore;
+        if (isNewBest) {
+            localStorage.setItem('void_survivor_best_score', GameState.score.toString());
+        }
+
+        // 3. 가상 랭킹 계산 (Hall of Fame 기준 추정)
+        // 1등: 12450, 2등: 10890, 3등: 9120
+        let rankText = "Top 100 Entry";
+        if (GameState.score > 12450) rankText = "GLOBAL 1st PLACE!";
+        else if (GameState.score > 10890) rankText = "GLOBAL 2nd PLACE!";
+        else if (GameState.score > 9120) rankText = "GLOBAL 3rd PLACE!";
+        else if (GameState.score > 5000) rankText = "Elite Survivor (Top 5%)";
+        else if (GameState.score > 2000) rankText = "Veteran (Top 20%)";
+
+        // 4. 전광판 텍스트 출력
+        this.add.text(width / 2, height * 0.3, 'GAME OVER', { fontSize: '64px', fill: '#f00', fontStyle: 'bold' }).setOrigin(0.5).setDepth(201);
+
+        const scoreInfo = `FINAL SCORE: ${GameState.score}\n` +
+            `YOUR BEST: ${isNewBest ? GameState.score : bestScore}${isNewBest ? " (NEW!)" : ""}\n\n` +
+            `RANK: ${rankText}`;
+
+        this.add.text(width / 2, height * 0.55, scoreInfo, {
+            fontSize: '28px',
+            fill: '#fff',
+            align: 'center',
+            backgroundColor: '#111',
+            padding: { x: 20, y: 15 }
+        }).setOrigin(0.5).setDepth(201);
+
+        this.add.text(width / 2, height * 0.8, 'Restarting in 5 seconds...', { fontSize: '18px', fill: '#888' }).setOrigin(0.5).setDepth(201);
 
         setTimeout(() => {
             this.scene.stop('UIScene');
             this.scene.restart();
-        }, 3000);
+        }, 5000);
     }
 
     update() {
