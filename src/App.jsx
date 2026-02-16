@@ -35,10 +35,10 @@ function App() {
             <div className="how-to-play">
               <h3>🎮 게임 방법 (How to Play)</h3>
               <ul>
-                <li><strong>PC 조작</strong>: <strong>방향키(↑ ↓ ← →)</strong>로 캐릭터를 정밀하게 움직이세요.</li>
-                <li><strong>모바일 조작</strong>: 화면 왼쪽 하단의 <strong>가상 조이스틱</strong>을 드래그하여 움직이세요! 손가락이 캐릭터를 가리지 않아 편리합니다.</li>
-                <li><strong>전체 화면</strong>: 우측 상단의 <strong>[ Fullscreen ]</strong>을 터치해 몰입감 넘치는 전체 화면으로 즐기세요!</li>
-                <li><strong>자동 사격</strong>: 프리미엄 아이템 장착 시 <strong>자동으로 가장 가까운 적</strong>을 조준 사격합니다. 조작은 오직 이동에만 집중하세요!</li>
+                <li><strong>통합 조작</strong>: PC(마우스)든 모바일(터치)든 화면 왼쪽 하단의 <strong>가상 조이스틱</strong>을 드래그하여 전장을 지배하세요!</li>
+                <li><strong>정밀 제어</strong>: 조이스틱을 살짝 당기면 천천히, 끝까지 당기면 빠르게 이동합니다.</li>
+                <li><strong>전체 화면</strong>: 우측 상단의 <strong>[ Fullscreen ]</strong>을 터치해 완벽하게 몰입된 전장을 경험하세요!</li>
+                <li><strong>자동 사격</strong>: 프리미엄 아이템 장착 시 <strong>자동 조준 사격</strong>이 활성화됩니다. 조작은 오직 '이동'에만 집중하세요!</li>
               </ul>
             </div>
 
