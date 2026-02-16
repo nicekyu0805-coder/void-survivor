@@ -76,8 +76,8 @@ class UIScene extends Phaser.Scene {
             }
         });
 
-        // 3. 버전 표시 간소화 (v4.0 - Game Balance)
-        this.versionText = this.add.text(width / 2, height - 30, 'v4.0 - Premium Balance Patch', {
+        // 3. 버전 표시 간소화 (v4.1 - Instructions Sync)
+        this.versionText = this.add.text(width / 2, height - 30, 'v4.1 - UI Instructions Updated', {
             fontSize: '12px',
             fill: '#ffffff'
         }).setOrigin(0.5).setDepth(1000).setAlpha(0.3);
