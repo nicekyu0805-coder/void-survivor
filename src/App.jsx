@@ -1,16 +1,60 @@
+import React, { useState, useEffect } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import GameComponent from './GameComponent';
 import './App.css';
 
 function App() {
+  const [user, setUser] = useState(localStorage.getItem('void_user') || '');
+  const [nicknameInput, setNicknameInput] = useState('');
+  const [trialStart, setTrialStart] = useState(localStorage.getItem('void_trial_start') || '');
+  const [isExpired, setIsExpired] = useState(false);
+  const [remainingTime, setRemainingTime] = useState('');
+
   const initialOptions = {
-    // 환경 변수에서 실제 Client ID를 읽어오도록 설정
     "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID || "test",
     currency: "USD",
     intent: "capture",
   };
 
-  // 아이템 구매 내역을 localStorage에 저장하는 유틸리티 함수
+  // 체험판 기간 체크 (72시간)
+  useEffect(() => {
+    if (user && trialStart) {
+      const checkTrial = () => {
+        const now = new Date().getTime();
+        const start = parseInt(trialStart);
+        const diff = now - start;
+        const totalTrial = 72 * 60 * 60 * 1000; // 3일
+
+        if (diff > totalTrial) {
+          setIsExpired(true);
+          setRemainingTime('EXP');
+        } else {
+          const remaining = totalTrial - diff;
+          const hours = Math.floor(remaining / (1000 * 60 * 60));
+          const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          setRemainingTime(`${Math.floor(hours / 24)}d ${hours % 24}h ${mins}m`);
+        }
+      };
+
+      checkTrial();
+      const timer = setInterval(checkTrial, 60000); // 1분마다 갱신
+      return () => clearInterval(timer);
+    }
+  }, [user, trialStart]);
+
+  const handleLogin = () => {
+    if (nicknameInput.trim().length < 2) {
+      alert('닉네임을 2자 이상 입력해주세요!');
+      return;
+    }
+    const startTime = new Date().getTime().toString();
+    localStorage.setItem('void_user', nicknameInput);
+    localStorage.setItem('void_trial_start', startTime);
+    setUser(nicknameInput);
+    setTrialStart(startTime);
+    alert(`${nicknameInput}님, 환영합니다! 3일간의 무료 체험이 시작되었습니다.`);
+  };
+
   const savePurchase = (itemKey) => {
     const saved = localStorage.getItem('void_survivor_purchases');
     const purchases = saved ? JSON.parse(saved) : [];
@@ -20,17 +64,54 @@ function App() {
     }
   };
 
+  // 로그인 안 된 경우 모달 표시
+  if (!user) {
+    return (
+      <div className="auth-modal-overlay">
+        <div className="auth-modal">
+          <h2>VOID SURVIVOR</h2>
+          <p style={{ marginBottom: '1rem', color: '#aaa' }}>전 세계 랭킹 등록을 위해 닉네임을 설정하세요.</p>
+          <input
+            className="nickname-input"
+            type="text"
+            placeholder="닉네임 입력 (예: Hero77)"
+            value={nicknameInput}
+            onChange={(e) => setNicknameInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+          />
+          <button className="claim-button" onClick={handleLogin}>계정 생성 & 시작하기</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <PayPalScriptProvider options={initialOptions}>
       <div className="container">
         <header className="header">
           <h1>VOID SURVIVOR</h1>
-          <p className="subtitle">글로벌 하이퍼 캐주얼 로그라이크</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', alignItems: 'center' }}>
+            <span className="subtitle">ID: {user}</span>
+            <div className={`trial-badge ${remainingTime === 'EXP' ? 'warning' : ''}`}>
+              {remainingTime === 'EXP' ? '⚠️ TRIAL EXPIRED' : `⏳ TRIAL: ${remainingTime} LEFT`}
+            </div>
+          </div>
         </header>
 
         <main className="main-layout">
           <div className="game-section">
             <GameComponent />
+
+            {isExpired && (
+              <div className="auth-modal-overlay">
+                <div className="auth-modal">
+                  <h2 style={{ color: 'var(--neon-pink)' }}>⚠️ 체험 기간 만료</h2>
+                  <p className="trial-expired-msg">3일간의 보급품이 모두 소진되었습니다!</p>
+                  <p style={{ color: '#aaa', marginBottom: '1.5rem' }}>인류의 구원을 위해 정식 지원군으로 합류하세요.</p>
+                  <button className="claim-button" onClick={() => window.location.reload()}>새로고침하여 다시 확인</button>
+                </div>
+              </div>
+            )}
 
             <div className="how-to-play">
               <h3>🎮 게임 방법 (How to Play)</h3>
@@ -49,6 +130,7 @@ function App() {
                 <div className="rank-item gold"><span className="rank-num">1</span><span className="rank-flag">🇺🇸</span><span className="rank-id">ShadowMaster</span><span className="rank-score">12,450</span></div>
                 <div className="rank-item silver"><span className="rank-num">2</span><span className="rank-flag">🇰🇷</span><span className="rank-id">K-Survivor</span><span className="rank-score">10,890</span></div>
                 <div className="rank-item bronze"><span className="rank-num">3</span><span className="rank-flag">🇯🇵</span><span className="rank-id">NeonNinja</span><span className="rank-score">9,120</span></div>
+                <div className="rank-item"><span className="rank-num">?</span><span className="rank-flag">👤</span><span className="rank-id">{user} (YOU)</span><span className="rank-score">BEST: {localStorage.getItem('void_survivor_best_score') || 0}</span></div>
               </div>
             </div>
           </div>
@@ -76,6 +158,12 @@ function App() {
                 <p className="item-desc">부활 시 5초 무적!</p>
                 <div className="pay-button"><PayPalButtons style={{ layout: "vertical", height: 40 }} createOrder={(data, actions) => actions.order.create({ purchase_units: [{ amount: { value: "1.99" } }] })} onApprove={(data, actions) => actions.order.capture().then(() => { savePurchase('RESURRECT'); if (window.applyGameReward) window.applyGameReward('RESURRECT'); })} /></div>
               </div>
+
+              {isExpired && (
+                <div style={{ padding: '10px', background: 'rgba(255,0,0,0.1)', border: '1px solid red', borderRadius: '8px', marginTop: '20px', textAlign: 'center' }}>
+                  <p style={{ color: 'white', fontSize: '0.8rem' }}>무료 체험이 종료되었습니다.<br />게임 플레이를 위해 위 아이템 중 하나를 구매해 지원해 주세요!</p>
+                </div>
+              )}
             </div>
           </aside>
         </main>
@@ -87,5 +175,7 @@ function App() {
     </PayPalScriptProvider>
   )
 }
+
+export default App
 
 export default App
